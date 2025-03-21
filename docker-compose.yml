@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: sakana_resume_backend_app
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=resume_user
+      - DB_PASSWORD=resume_password
+      - DB_NAME=resume_access
+      - JWT_SECRET=your_jwt_secret_key_please_change_in_production
+      - ACCESS_CODE_LENGTH=8
+      - MAX_ACCESS_ATTEMPTS=3
+    depends_on:
+      - mysql
+    networks:
+      - sakana_network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: sakana_resume_backend_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: your_password
+      MYSQL_DATABASE: resume_access
+      MYSQL_USER: resume_user
+      MYSQL_PASSWORD: resume_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - sakana_network
+    restart: unless-stopped
+
+networks:
+  sakana_network:
+    driver: bridge
+
+volumes:
+  mysql_data: 
