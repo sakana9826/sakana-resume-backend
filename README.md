@@ -11,6 +11,7 @@
 - 一次性使用限制
 - 跨域支持
 - Docker 容器化部署
+- GitHub Actions 自动部署
 
 ## 技术栈
 
@@ -20,6 +21,7 @@
 - MySQL 8.0
 - JWT 认证
 - Docker & Docker Compose
+- GitHub Actions
 
 ## 快速开始
 
@@ -75,6 +77,30 @@ cp .env.example .env
 ```bash
 go run main.go
 ```
+
+### 自动部署
+
+项目使用 GitHub Actions 实现自动部署。当向 `main` 分支推送代码时，会自动触发部署流程。
+
+#### 部署流程
+
+1. 连接到服务器
+2. 拉取最新代码
+3. 停止并删除旧的容器
+4. 构建新的镜像
+5. 启动新的容器
+6. 清理旧的镜像（保留最近5个版本）
+
+#### 配置要求
+
+1. 在 GitHub 仓库的 Settings -> Secrets and variables -> Actions 中添加以下密钥：
+   - `SERVER_HOST`：服务器 IP 地址
+   - `SERVER_USERNAME`：服务器用户名
+   - `SERVER_SSH_KEY`：SSH 私钥
+
+2. 确保服务器上的 `/project/sakana-resume-backend` 目录已存在，并且有正确的权限
+
+3. 确保服务器上已安装 Docker 和 Docker Compose
 
 ## API 接口
 
